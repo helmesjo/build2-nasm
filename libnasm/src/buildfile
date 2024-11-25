@@ -14,7 +14,7 @@ lib{nasm}: $pub/{$pub_hdrs}
 
 # Private headers and sources as well as dependencies.
 #
-lib{nasm}: {h c}{**} $impl_libs $intf_libs
+lib{nasm}: {h}{**} $impl_libs $intf_libs
 
 # Build options.
 #

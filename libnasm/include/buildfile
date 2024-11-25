@@ -1,6 +1,16 @@
+using autoconf
+
 pub_hdrs = h{**}
 
-./: $pub_hdrs
+./: $pub_hdrs h{version config}
+
+[rule_hint=version.in] \
+h{version}: in{version} $src_root/manifest
+
+h{config}: in{config}
+{
+  ABORT_ON_PANIC = 1
+}
 
 # Install recreating subdirectories.
 #
