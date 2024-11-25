@@ -24,7 +24,9 @@ out_pfx_src = [dir_path] $out_root/src/
 src_pfx_src = [dir_path] $src_root/src/
 
 c.poptions =+ "-I$out_pfx_src" "-I$src_pfx_src" \
-              "-I$out_pfx_inc" "-I$src_pfx_inc"
+              "-I$out_pfx_inc" "-I$src_pfx_inc" \
+              "-I$src_pfx_inc/asm/" \
+              "-I$src_pfx_inc/output/"
 
 #obja{*}: c.poptions += -DLIBNASM_STATIC_BUILD
 #objs{*}: c.poptions += -DLIBNASM_SHARED_BUILD
