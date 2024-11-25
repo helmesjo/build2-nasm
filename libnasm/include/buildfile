@@ -9,7 +9,9 @@ h{version}: in{version} $src_root/manifest
 
 h{config}: in{config}
 {
+  PACKAGE_NAME = "\"nasm\""
   ABORT_ON_PANIC = 1
+  STDC_HEADERS = 1
 }
 
 # Install recreating subdirectories.
