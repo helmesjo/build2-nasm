@@ -1,0 +1,25 @@
+using autoconf
+
+exe{nasm}: libua{nasm}: h{** -version -config/config} c{**} h{version config/config}
+
+[rule_hint=version.in] \
+h{version}: in{version} $src_root/manifest
+
+config/h{config}: in{config}
+{
+  PACKAGE_NAME = "\"nasm\""
+  ABORT_ON_PANIC = 1
+  STDC_HEADERS = 1
+}
+
+# Build options.
+#
+c.poptions =+ -DHAVE_CONFIG_H \
+              "-I$out_base" "-I$src_base" \
+              "-I$src_base/asm/" \
+              "-I$src_base/gen/asm/" \
+              "-I$src_base/gen/include/" \
+              "-I$src_base/gen/x86/" \
+              "-I$src_base/include/" \
+              "-I$src_base/nasmlib/" \
+              "-I$src_base/output/"

@@ -1,0 +1,13 @@
+: 1
+name: nasm
+version: 0.1.0-a.0.z
+language: c
+summary: nasm C executable
+license: other: proprietary ; Not free/open source.
+package-description-file: PACKAGE-README.md
+url: https://example.org/upstream
+email: upstream@example.org
+package-url: https://github.com/build2-packaging/nasm
+package-email: packaging@build2.org ; Mailing list.
+depends: * build2 >= 0.16.0
+depends: * bpkg >= 0.16.0
