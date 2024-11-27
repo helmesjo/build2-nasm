@@ -18,15 +18,13 @@
 #
 #*.png binary
 
-include      symlink=dir
-include/x86  symlink=dir
-src/asm      symlink=dir
-src/autoconf symlink=dir
-src/common   symlink=dir
-src/config   symlink=dir
-src/macros   symlink=dir
-src/nasm     symlink=dir
-src/nasmlib  symlink=dir
-src/output   symlink=dir
-src/stdlib   symlink=dir
-src/x86      symlink=dir
+nasm/nasm/asm      symlink=dir
+nasm/nasm/autoconf symlink=dir
+nasm/nasm/common   symlink=dir
+nasm/nasm/config   symlink=dir
+nasm/nasm/include  symlink=dir
+nasm/nasm/macros   symlink=dir
+nasm/nasm/nasmlib  symlink=dir
+nasm/nasm/output   symlink=dir
+nasm/nasm/stdlib   symlink=dir
+nasm/nasm/x86      symlink=dir

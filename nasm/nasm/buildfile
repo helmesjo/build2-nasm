@@ -1,6 +1,9 @@
 using autoconf
 
-exe{nasm}: libua{nasm}: h{** -version -config/config} c{**} h{version config/config}
+exe{nasm}: libul{nasm}: h{** -version -config/config -gen_*/**} c{** -gen_*/**} h{version}
+libul{nasm}: h{config/config}: include = ($c.id != 'msvc')
+libul{nasm}: {h c}{gen_unix/**}: include = ($c.id != 'msvc')
+libul{nasm}: {h c}{gen_msvc/**}: include = ($c.id == 'msvc')
 
 [rule_hint=version.in] \
 h{version}: in{version} $src_root/manifest
@@ -14,12 +17,22 @@ config/h{config}: in{config}
 
 # Build options.
 #
-c.poptions =+ -DHAVE_CONFIG_H \
-              "-I$out_base" "-I$src_base" \
+c.poptions =+ "-I$out_base" "-I$src_base" \
               "-I$src_base/asm/" \
-              "-I$src_base/gen/asm/" \
-              "-I$src_base/gen/include/" \
-              "-I$src_base/gen/x86/" \
               "-I$src_base/include/" \
               "-I$src_base/nasmlib/" \
               "-I$src_base/output/"
+
+if ($c.id != 'msvc')
+{
+  c.poptions =+ -DHAVE_CONFIG_H \
+                "-I$src_base/gen_unix/asm/" \
+                "-I$src_base/gen_unix/include/" \
+                "-I$src_base/gen_unix/x86/"
+}
+else
+{
+  c.poptions =+ "-I$src_base/gen_msvc/asm/" \
+                "-I$src_base/gen_msvc/include/" \
+                "-I$src_base/gen_msvc/x86/"
+}
