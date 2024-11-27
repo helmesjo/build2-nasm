@@ -6,12 +6,12 @@ exe{nasm}: libul{nasm}: h{** -version -config/config -gen_*/**} \
 
 # NOTE: skip errfile & ilog2 on clang/clangcl because functions get redefined in nasm.c
 #       causing 'already defined' link errors.
-is_clang = ($c.id == 'clang' || $c.id == 'msvc-clang')
-libul{nasm}: c{nasmlib/**}: include = (!$is_clang)
-libul{nasm}: c{nasmlib/** -nasmlib/errfile -nasmlib/ilog2}: include = $is_clang
-libul{nasm}: h{config/config}:   include = ($c.target.system != 'win32-msvc')
-libul{nasm}: {h c}{gen_unix/**}: include = ($c.target.system != 'win32-msvc')
-libul{nasm}: {h c}{gen_msvc/**}: include = ($c.target.system == 'win32-msvc')
+
+libul{nasm}: c{nasmlib/**}:                                 include = ($c.id == 'msvc')
+libul{nasm}: c{nasmlib/** -nasmlib/errfile -nasmlib/ilog2}: include = ($c.id != 'msvc')
+libul{nasm}: h{config/config}:                              include = ($c.target.system != 'win32-msvc')
+libul{nasm}: {h c}{gen_unix/**}:                            include = ($c.target.system != 'win32-msvc')
+libul{nasm}: {h c}{gen_msvc/**}:                            include = ($c.target.system == 'win32-msvc')
 
 # ./: exe{ndisasm}: h{** -version -config/config -gen_*/**} c{** -asm/nasm.c} h{version}
 
