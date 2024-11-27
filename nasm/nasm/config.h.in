@@ -1,7 +1,16 @@
-/* config/config.h.in.  Generated from configure.ac by autoheader.  */
+#ifndef NASM_CONFIG_H
+#define NASM_CONFIG_H
+
+// Workaround for re-definition clash between <sys/types.h>
+// and <basetsd.h> when targeting win32-msvc.
+// Including <sys/types.h> before eg. <basetsd.h>
+#ifdef _WIN32
+#  include <sys/types.h>
+#  include <basetsd.h>
+#endif
 
 /* Define to 1 to call abort() on panics (internal errors), for debugging. */
-// #undef ABORT_ON_PANIC
+#undef ABORT_ON_PANIC
 
 /* Define if building universal (internal helper macro) */
 // #undef AC_APPLE_UNIVERSAL_BUILD
@@ -924,3 +933,5 @@
 #define alloc_size_func1_ptr(x1)
 #endif
 #endif
+
+#endif // NASM_CONFIG_H
