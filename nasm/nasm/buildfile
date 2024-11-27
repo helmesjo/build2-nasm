@@ -1,17 +1,14 @@
 using autoconf
 
-exe{nasm}: libul{nasm}: h{** -version -config/config -gen_*/**} \
-                        h{version} \
-                        c{** -gen_*/** -disasm/** -nasmlib/**}
-
-# NOTE: skip errfile & ilog2 on clang/clangcl because functions get redefined in nasm.c
+# NOTE: skip errfile because it gets redefined in nasm.c
 #       causing 'already defined' link errors.
 
-libul{nasm}: c{nasmlib/**}:                                 include = ($c.id == 'msvc')
-libul{nasm}: c{nasmlib/** -nasmlib/errfile -nasmlib/ilog2}: include = ($c.id != 'msvc')
-libul{nasm}: h{config/config}:                              include = ($c.target.system != 'win32-msvc')
-libul{nasm}: {h c}{gen_unix/**}:                            include = ($c.target.system != 'win32-msvc')
-libul{nasm}: {h c}{gen_msvc/**}:                            include = ($c.target.system == 'win32-msvc')
+exe{nasm}: libul{nasm}: h{** -version -config/config -gen_*/**} \
+                        h{version config/config} \
+                        c{** -gen_*/** -disasm/** -nasmlib/errfile}
+
+libul{nasm}: {h c}{gen_unix/**}: include = ($c.target.system != 'win32-msvc')
+libul{nasm}: {h c}{gen_msvc/**}: include = ($c.target.system == 'win32-msvc')
 
 # ./: exe{ndisasm}: h{** -version -config/config -gen_*/**} c{** -asm/nasm.c} h{version}
 
@@ -28,7 +25,8 @@ config/h{config}: in{config}
 
 # Build options.
 #
-c.poptions =+ "-I$out_base" "-I$src_base" \
+c.poptions =+ -DHAVE_CONFIG_H \
+              "-I$out_base" "-I$src_base" \
               "-I$src_base/asm/" \
               "-I$src_base/include/" \
               "-I$src_base/nasmlib/" \
@@ -39,8 +37,7 @@ if ($c.id != 'msvc')
 
 if ($c.target.system != 'win32-msvc')
 {
-  c.poptions =+ -DHAVE_CONFIG_H \
-                "-I$src_base/gen_unix/asm/" \
+  c.poptions =+ "-I$src_base/gen_unix/asm/" \
                 "-I$src_base/gen_unix/include/" \
                 "-I$src_base/gen_unix/x86/"
 }
