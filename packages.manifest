@@ -1,5 +1,2 @@
 : 1
-location: libnasm/
-
-:
 location: nasm/

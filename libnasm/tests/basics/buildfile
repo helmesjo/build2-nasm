@@ -1,3 +1,0 @@
-import libs = libnasm%lib{nasm}
-
-exe{driver}: {h c}{**} $libs testscript{**}
