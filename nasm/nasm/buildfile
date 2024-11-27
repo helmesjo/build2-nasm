@@ -1,16 +1,15 @@
 using autoconf
 
-# NOTE: skip errfile because it gets redefined in nasm.c
-#       causing 'already defined' link errors.
+# NOTE: skip errfile because error_file gets redefined
+#       in nasm.c causing 'already defined' link errors.
+liba{nasm}: h{** -version -config/config -gen_*/**} \
+            h{version config/config} \
+            c{** -gen_*/** -asm/nasm -disasm/ndisasm -nasmlib/errfile}
+liba{nasm}: {h c}{gen_unix/**}: include = ($c.target.system != 'win32-msvc')
+liba{nasm}: {h c}{gen_msvc/**}: include = ($c.target.system == 'win32-msvc')
 
-exe{nasm}: libul{nasm}: h{** -version -config/config -gen_*/**} \
-                        h{version config/config} \
-                        c{** -gen_*/** -disasm/** -nasmlib/errfile}
-
-libul{nasm}: {h c}{gen_unix/**}: include = ($c.target.system != 'win32-msvc')
-libul{nasm}: {h c}{gen_msvc/**}: include = ($c.target.system == 'win32-msvc')
-
-# ./: exe{ndisasm}: h{** -version -config/config -gen_*/**} c{** -asm/nasm.c} h{version}
+./: exe{nasm}: c{asm/nasm} liba{nasm}
+./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm}
 
 [rule_hint=version.in] \
 h{version}: in{version} $src_root/manifest
@@ -18,9 +17,7 @@ h{version}: in{version} $src_root/manifest
 config/h{config}: in{config}
 {
   PACKAGE_NAME = "\"nasm\""
-  ABORT_ON_PANIC = 1
-  # STDC_HEADERS = 1
-  # CFLAGS_FVISIBILITY_HIDDEN = $find($c.coptions, '-fvisibility=hidden')
+  ABORT_ON_PANIC = 0
 }
 
 # Build options.
