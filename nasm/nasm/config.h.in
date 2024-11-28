@@ -176,13 +176,13 @@
 #undef HAVE_CANONICALIZE_FILE_NAME
 
 /* Define to 1 if you have the `cpu_to_le16' intrinsic function. */
-#undef HAVE_CPU_TO_LE16
+// #undef HAVE_CPU_TO_LE16
 
 /* Define to 1 if you have the `cpu_to_le32' intrinsic function. */
-#undef HAVE_CPU_TO_LE32
+// #undef HAVE_CPU_TO_LE32
 
 /* Define to 1 if you have the `cpu_to_le64' intrinsic function. */
-#undef HAVE_CPU_TO_LE64
+// #undef HAVE_CPU_TO_LE64
 
 /* Define to 1 if you have the declaration of 'strcasecmp', and to 0 if you
    don't. */
