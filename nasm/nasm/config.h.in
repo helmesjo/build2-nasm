@@ -430,7 +430,7 @@
 #undef HAVE_STRNLEN
 
 /* Define to 1 if you have the 'strrchrnul' function. */
-#undef HAVE_STRRCHRNUL
+// #undef HAVE_STRRCHRNUL
 
 /* Define to 1 if you have the 'strsep' function. */
 #undef HAVE_STRSEP
