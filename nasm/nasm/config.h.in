@@ -361,7 +361,7 @@
 #undef HAVE_MEMPCPY
 
 /* Define to 1 if you have the 'mempset' function. */
-#undef HAVE_MEMPSET
+// #undef HAVE_MEMPSET
 
 /* Define to 1 if you have the <minix/config.h> header file. */
 // #undef HAVE_MINIX_CONFIG_H
