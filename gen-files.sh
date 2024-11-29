@@ -14,7 +14,7 @@ export color_Default=$color_DarkWhite
 script_dir="$(pwd)"
 
 # NOTE: these names are expected by the perl scripts
-top_srcdir="$(realpath -L $1)"
+top_srcdir="$(readlink -f $1)"
 tools="${top_srcdir}/tools"
 SUBDIRS="stdlib nasmlib include config output asm disasm x86 common macros"
 XSUBDIRS="test doc nsis win"
@@ -23,6 +23,20 @@ PERL="$(which perl)"
 PERLFLAGS="-I./perllib/ -I./"
 RUNPERL="$PERL $PERLFLAGS"
 # -----------------------------------
+
+if ! find . -maxdepth 0 -printf "%T@\n" 2>/dev/null; then
+  found="$(find $(brew --prefix)/opt/findutils/ -name gfind)"
+  if [[ -z ${found:-} ]]; then
+    echo "Error: If on MacOS, install gfind: brew install findutils"
+    exit 1
+  fi
+
+  gfind() { $found "$@"; }
+  export -f gfind
+else
+  gfind() { find "$@"; }
+  export -f gfind
+fi
 
 makefiles=$(find $top_srcdir -type f -name 'Makefile.in')
 generated_files=()
@@ -41,37 +55,38 @@ for file in ${makefiles[@]}; do
   # 6. trim whitespace
   # 7. Remove lines executing tests
   lines=$(cat "$file" \
-    | sed -r 's%\s*#.*$%%g' \
+    | sed -E 's%[[:space:]]*#.*$%%g' \
     | sed -re :a -e '/\\$/N; s/\\\n//; ta' \
-    | sed -r 's%\$\((\S+)\)%${\1}%g' \
-    | grep '${RUNPERL}' \
-    | sed -r 's%^\s+%%g' \
-    | sed -r 's%\s+% %g' \
-    | sed -r 's%\s*=\s*%=%' \
-    | sed -r '/^\s*$/d' \
-    | sed -r 's%'"'"'%%g' \
-    | sed -r '/^.*performtest.pl.*$/d' \
+    | sed -E 's%\$\(([^)]+)\)%\${\1}%g' \
+    | grep -E '\$\{RUNPERL\}' \
+    | sed -E 's%^[[:space:]]+%%g' \
+    | sed -E 's%[[:space:]]+% %g' \
+    | sed -E 's%[[:space:]]*=[[:space:]]*%=%' \
+    | sed -E '/^[[:space:]]*$/d' \
+    | sed -E 's%'"'"'%%g' \
+    | sed -E '/^.*performtest.pl.*$/d' \
     )
 
   before=$(mktemp)
   after=$(mktemp)
   lines=$(eval "echo \"$lines\"") || continue
   while read -r line; do
-    echo "/usr/bin/env -C $srcdir $line"
+    [[ -z "$line" ]] && continue
+    echo "/usr/bin/env -C "$top_srcdir" && $line"
 
-    # Record state before eval
-    /usr/bin/env -C "$top_srcdir" find . -type f -printf "%T@ %p\n" | sort > "$before"
+    $(cd "$top_srcdir" && gfind . -type f -printf "%T@ %p\n" | sort > "$before")
 
     stdout="$(mktemp)"
-    ec=$(/usr/bin/env -C "$top_srcdir" bash -c "eval '${line[@]}' >>$stdout 2>>$stdout; echo \$?")
+    ec=$(cd "$top_srcdir" &&  bash -c "eval '${line[@]}' >>$stdout 2>>$stdout; echo \$?")
     out="$(cat $stdout)"
 
     # Record state after eval
-    /usr/bin/env -C "$top_srcdir" find . -type f -printf "%T@ %p\n" | sort > "$after"
+    $(cd "$top_srcdir" && gfind . -type f -printf "%T@ %p\n" | sort > "$after")
 
     # Compare to find new files
     new_files=$(comm -13 "$before" "$after")
     new_files=$(echo "$new_files" | awk '{print $2}')
+    echo "${new_files[@]}"
     rm "$stdout" "$before" "$after"
 
     if [[ $ec -ne 0 ]]; then
