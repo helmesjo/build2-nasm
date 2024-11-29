@@ -29,19 +29,14 @@ c.poptions =+ -DHAVE_CONFIG_H \
               "-I$src_base/nasmlib/" \
               "-I$src_base/output/"
 
-if ($c.target.system != 'win32-msvc')
-{
-  c.poptions =+ "-I$src_base/gen_unix/asm/" \
-                "-I$src_base/gen_unix/include/" \
-                "-I$src_base/gen_unix/x86/"
-}
-else
-{
-  c.poptions =+ -D_CRT_SECURE_NO_WARNINGS \
-                "-I$src_base/gen_msvc/asm/" \
-                "-I$src_base/gen_msvc/include/" \
-                "-I$src_base/gen_msvc/x86/"
-}
+# generated manually with gen-files.sh
+# NOTE: regenerate for each new package version
+c.poptions =+ "-I$src_base/gen/asm/" \
+              "-I$src_base/gen/macros/" \
+              "-I$src_base/gen/nasmlib/" \
+              "-I$src_base/gen/nsis/" \
+              "-I$src_base/gen/output/" \
+              "-I$src_base/gen/x86/"
 
 if ($c.id.type == 'msvc')
 {

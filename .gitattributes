@@ -28,5 +28,5 @@ nasm/nasm/macros   symlink=dir
 nasm/nasm/nasmlib  symlink=dir
 nasm/nasm/output   symlink=dir
 nasm/nasm/stdlib   symlink=dir
-nasm/nasm/x86      symlink=dir
 nasm/nasm/win      symlink=dir
+nasm/nasm/x86      symlink=dir
