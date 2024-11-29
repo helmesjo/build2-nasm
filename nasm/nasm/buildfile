@@ -29,9 +29,6 @@ c.poptions =+ -DHAVE_CONFIG_H \
               "-I$src_base/nasmlib/" \
               "-I$src_base/output/"
 
-if ($c.id != 'msvc')
-  c.coptions += -Wno-deprecated-declarations
-
 if ($c.target.system != 'win32-msvc')
 {
   c.poptions =+ "-I$src_base/gen_unix/asm/" \
@@ -44,5 +41,38 @@ else
                 "-I$src_base/gen_msvc/asm/" \
                 "-I$src_base/gen_msvc/include/" \
                 "-I$src_base/gen_msvc/x86/"
-  c.loptions =+ -IGNORE:4006
+}
+
+if ($c.id.type == 'msvc')
+{
+  if ($c.id == 'msvc-clang')
+    c.coptions =+ -Wno-deprecated-declarations
+
+  c.loptions =+ /OPT:REF \
+                /OPT:ICF
+
+  obj{asm/nasm disasm/ndisasm}:
+  {
+    c.loptions =+ /SUBSYSTEM \
+                  /MANIFEST:EMBED \
+                  /MANIFESTINPUT:win/manifest.xml \
+                  /SUBSYSTEM:CONSOLE
+  }
+}
+else
+{
+    c.poptions =+ -U__STRICT_ANSI__
+    c.coptions =+ -Wno-deprecated-declarations \
+                  -fwrapv \
+                  -ftrivial-auto-var-init=zero \
+                  -fno-common \
+                  -ffunction-sections \
+                  -fdata-sections \
+                  -fvisibility=hidden
+
+    if ($c.target.system != 'win32-msvc')
+    {
+      c.loptions =+ -Wl,--as-needed \
+                    -Wl,--gc-sections
+    }
 }
