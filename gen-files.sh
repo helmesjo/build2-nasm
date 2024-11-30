@@ -106,6 +106,8 @@ for file in ${makefiles[@]}; do
         mkdir -p $(dirname "$dst")
         cp "$src" "$dst"
 
+        sed -i '' -e "s|$top_srcdir/||g" "$dst"
+
         generated_files+=("$newfile")
         printf '%b%s%b%s\n' $color_Green "OK: " $color_Default "$dst"
       done
