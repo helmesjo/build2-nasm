@@ -1,6 +1,83 @@
-libs =
-#import libs += libhello%lib{hello}
+using autoconf
 
-exe{nasm}: {h c}{**} $libs testscript
+./: exe{nasm}: c{asm/nasm} liba{nasm} testscript
+./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm} testscript
 
-c.poptions =+ "-I$out_root" "-I$src_root"
+liba{nasm}: h{** -config/config} h{config/config} \
+            c{** -asm/nasm -disasm/ndisasm}
+
+config/h{config}: in{config}
+{
+  PACKAGE_NAME = "\"nasm\""
+  ABORT_ON_PANIC = 0
+}
+
+# Build options.
+#
+of_default = [string] $config.nasm.of_default
+of_name    = [string] $config.nasm.of_name
+of_no_name = [string] $config.nasm.of_no_name
+c.poptions =+ \
+              (!$empty($of_default)   ? -DOF_DEFAULT=of_$of_default :) \
+              (!$empty($of_name)      ? -DOF_$ucase($of_name) :) \
+              (!$empty($of_no_name)   ? -DOF_NO_$ucase($of_no_name) :) \
+              ($config.nasm.of_all    ? -DOF_ALL :) \
+              ($config.nasm.of_dos    ? -DOF_DOS :)
+              ($config.nasm.of_only   ? -DOF_ONLY :)
+              ($config.nasm.of_dos    ? -DOF_DOS :)
+              ($config.nasm.of_unix   ? -DOF_UNIX :)
+              ($config.nasm.of_others ? -DOF_OTHERS :)
+
+c.poptions =+ "-I$out_base" "-I$src_base" \
+              "-I$src_base/asm" \
+              "-I$src_base/include" \
+              "-I$src_base/nasmlib" \
+              "-I$src_base/output"
+
+# generated manually with gen-files.sh
+# NOTE: regenerate for each new package version
+c.poptions =+ "-I$src_base/gen" \
+              "-I$src_base/gen/asm" \
+              "-I$src_base/gen/macros" \
+              "-I$src_base/gen/include" \
+              "-I$src_base/gen/nasmlib" \
+              "-I$src_base/gen/nsis" \
+              "-I$src_base/gen/output" \
+              "-I$src_base/gen/x86"
+
+# TODO: Look through msvc.h and check what is missing
+#       for us to just use config.h (-DHAVE_CONFIG_H)
+#       instead (it builds with config.h but generates
+#       warnings, and it breaks linking in ffmpeg with it).
+if ($c.id.type == 'msvc')
+{
+  if ($c.id == 'msvc-clang')
+    c.coptions =+ -Wno-deprecated-declarations
+
+  {exe objs}{**}:
+  {
+    c.loptions =+ -OPT:REF \
+                  -OPT:ICF \
+                  -MANIFEST:EMBED \
+                  -MANIFESTINPUT:"$src_base/win/manifest.xml" \
+                  -SUBSYSTEM:CONSOLE
+  }
+}
+else
+{
+    c.poptions =+ -DHAVE_CONFIG_H -U__STRICT_ANSI__
+    c.coptions =+ -Wno-deprecated-declarations \
+                  -fwrapv \
+                  -ftrivial-auto-var-init=zero \
+                  -fno-common \
+                  -ffunction-sections \
+                  -fdata-sections \
+                  -fvisibility=hidden
+
+    if ($c.target.class == 'linux')
+    {
+      c.poptions =+ -D_GNU_SOURCE
+      c.loptions =+ -Wl,--as-needed \
+                    -Wl,--gc-sections
+    }
+}

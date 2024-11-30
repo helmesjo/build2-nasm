@@ -10,3 +10,26 @@ c{*}: extension = c
 # The test target for cross-testing (running tests under Wine, etc).
 #
 test.target = $c.target
+
+# NOTE: See outform.h for all OF_XXX options.
+# OF_ONLY                -- only include specified object formats
+# OF_name                -- ensure that output format 'name' is included
+# OF_NO_name             -- remove output format 'name'
+# OF_DOS                 -- ensure that 'obj', 'bin', 'win32' & 'win64' are included.
+# OF_UNIX                -- ensure that 'aout', 'aoutb', 'coff', 'elf32' & 'elf64' are in.
+# OF_OTHERS              -- ensure that 'bin', 'as86', 'rdf' 'macho32' & 'macho64' are in.
+# OF_ALL                 -- ensure that all formats are included.
+#                           note that this doesn't include 'dbg', which is
+#                           only really useful if you're doing development
+#                           work on NASM. Define OF_DBG if you want this.
+#
+# OF_DEFAULT=of_name     -- ensure that 'name' is the default format.
+config [string] config.nasm.of_default ?= bin
+config [string] config.nasm.of_name    ?=
+config [string] config.nasm.of_no_name ?=
+
+config [bool]   config.nasm.of_all     ?= true
+config [bool]   config.nasm.of_only    ?= false
+config [bool]   config.nasm.of_dos     ?= false
+config [bool]   config.nasm.of_unix    ?= false
+config [bool]   config.nasm.of_others  ?= false
