@@ -67,6 +67,7 @@ else
 
     if ($c.target.class == 'linux')
     {
+      c.poptions =+ -D_GNU_SOURCE
       c.loptions =+ -Wl,--as-needed \
                     -Wl,--gc-sections
     }
