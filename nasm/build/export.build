@@ -1,0 +1,6 @@
+$out_root/
+{
+  include nasm/
+}
+
+export $out_root/nasm/$import.target
