@@ -1,6 +1,71 @@
-libs =
-#import libs += libhello%lib{hello}
+using autoconf
 
-exe{nasm}: {h c}{**} $libs testscript
+# NOTE: skip errfile because error_file gets redefined
+#       in nasm.c causing 'already defined' link errors.
+liba{nasm}: h{** -config/config} \
+            h{config/config} \
+            c{** --asm/nasm -disasm/ndisasm -nasmlib/errfile}
 
-c.poptions =+ "-I$out_root" "-I$src_root"
+./: exe{nasm}: c{asm/nasm} liba{nasm}
+./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm}
+
+config/h{config}: in{config}
+{
+  PACKAGE_NAME = "\"nasm\""
+  ABORT_ON_PANIC = 0
+}
+
+# Build options.
+#
+c.poptions =+ -DHAVE_CONFIG_H \
+              "-I$out_base" "-I$src_base" \
+              "-I$src_base/asm/" \
+              "-I$src_base/include/" \
+              "-I$src_base/nasmlib/" \
+              "-I$src_base/output/"
+
+# generated manually with gen-files.sh
+# NOTE: regenerate for each new package version
+c.poptions =+ "-I$src_base/gen/" \
+              "-I$src_base/gen/asm/" \
+              "-I$src_base/gen/macros/" \
+              "-I$src_base/gen/include/" \
+              "-I$src_base/gen/nasmlib/" \
+              "-I$src_base/gen/nsis/" \
+              "-I$src_base/gen/output/" \
+              "-I$src_base/gen/x86/"
+
+if ($c.id.type == 'msvc')
+{
+  if ($c.id == 'msvc-clang')
+    c.coptions =+ -Wno-deprecated-declarations
+
+  c.loptions =+ /OPT:REF \
+                /OPT:ICF
+
+  obj{asm/nasm disasm/ndisasm}:
+  {
+    c.loptions =+ /SUBSYSTEM \
+                  /MANIFEST:EMBED \
+                  /MANIFESTINPUT:win/manifest.xml \
+                  /SUBSYSTEM:CONSOLE
+  }
+}
+else
+{
+    c.poptions =+ -U__STRICT_ANSI__
+    c.coptions =+ -Wno-deprecated-declarations \
+                  -fwrapv \
+                  -ftrivial-auto-var-init=zero \
+                  -fno-common \
+                  -ffunction-sections \
+                  -fdata-sections \
+                  -fvisibility=hidden
+
+    if ($c.target.class == 'linux')
+    {
+      c.poptions =+ -D_GNU_SOURCE
+      c.loptions =+ -Wl,--as-needed \
+                    -Wl,--gc-sections
+    }
+}
