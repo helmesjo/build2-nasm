@@ -6,8 +6,8 @@ liba{nasm}: h{** -config/config} \
             h{config/config} \
             c{** --asm/nasm -disasm/ndisasm -nasmlib/errfile}
 
-./: exe{nasm}: c{asm/nasm} liba{nasm}
-./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm}
+./: exe{nasm}: c{asm/nasm} liba{nasm} testscript
+./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm} testscript
 
 config/h{config}: in{config}
 {
