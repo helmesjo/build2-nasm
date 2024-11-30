@@ -1,0 +1,5 @@
+Mkfiles/
+*Makefile*
+*version*
+!version.h
+
