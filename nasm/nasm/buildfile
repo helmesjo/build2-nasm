@@ -65,7 +65,7 @@ else
                   -fdata-sections \
                   -fvisibility=hidden
 
-    if ($c.target.system != 'win32-msvc')
+    if ($c.target.class == 'linux')
     {
       c.loptions =+ -Wl,--as-needed \
                     -Wl,--gc-sections
