@@ -1,4 +1,4 @@
-/* automatically generated from /c/Users/fho/git/b2/build2-nasm/upstream/x86/regs.dat - do not edit */
+/* automatically generated from x86/regs.dat - do not edit */
 
 #include "tables.h"
 

@@ -1,5 +1,5 @@
 /*
- * This file is generated from /c/Users/fho/git/b2/build2-nasm/upstream/asm/directiv.dat
+ * This file is generated from asm/directiv.dat
  * by perfhash.pl; do not edit.
  */
 

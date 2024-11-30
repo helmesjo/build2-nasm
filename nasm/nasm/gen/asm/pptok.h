@@ -1,4 +1,4 @@
-/* Automatically generated from /c/Users/fho/git/b2/build2-nasm/upstream/asm/pptok.dat by /c/Users/fho/git/b2/build2-nasm/upstream/asm/pptok.pl */
+/* Automatically generated from asm/pptok.dat by asm/pptok.pl */
 /* Do not edit */
 
 enum preproc_token {
