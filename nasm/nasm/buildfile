@@ -2,11 +2,9 @@ using autoconf
 
 # NOTE: skip errfile because error_file gets redefined
 #       in nasm.c causing 'already defined' link errors.
-liba{nasm}: h{** -version -config/config -gen_*/**} \
+liba{nasm}: h{** -version -config/config} \
             h{version config/config} \
-            c{** -gen_*/** -asm/nasm -disasm/ndisasm -nasmlib/errfile}
-liba{nasm}: {h c}{gen_unix/**}: include = ($c.target.system != 'win32-msvc')
-liba{nasm}: {h c}{gen_msvc/**}: include = ($c.target.system == 'win32-msvc')
+            c{** --asm/nasm -disasm/ndisasm -nasmlib/errfile}
 
 ./: exe{nasm}: c{asm/nasm} liba{nasm}
 ./: exe{ndisasm}: c{disasm/ndisasm} liba{nasm}
