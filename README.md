@@ -7,13 +7,13 @@ platform, and with code generation for many platforms old and new.
 This file contains setup instructions and other details that are more
 appropriate for development rather than consumption. If you want to use
 `nasm` in your `build2`-based project, then instead see the accompanying
-[`PACKAGE-README.md`](./PACKAGE-README.md) file.
+[`PACKAGE-README.md`](./nasm/PACKAGE-README.md) file.
 
 The development setup for `nasm` uses the standard `bdep`-based workflow.
 For example:
 
 ```
-git clone https://github.com/helmesjo/build2-nasm
+git clone https://github.com/build2-packaging/nasm
 cd nasm
 
 bdep init -C @gcc cc config.cxx=g++

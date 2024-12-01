@@ -2,14 +2,14 @@
 name: nasm
 version: 2.16.3-a.0.z
 language: c
-project: build2-nasm
-summary: nasm C executable
+project: nasm
+summary: assembler & disassembler, targeting the Intel x86 series of processors.
 license: BSD-2-Clause ; BSD 2-Clause "Simplified" License.
 description-file: README.md
 package-description-file: PACKAGE-README.md
 changes-file: CHANGES
 url: https://repo.or.cz/w/nasm.git
-email: nasm-bugs@nasm.us
+email: nasm-bugs@nasm.us ; Mailing list.
 package-url: https://github.com/build2-packaging/build2-nasm
 package-email: packaging@build2.org ; Mailing list.
 depends: * build2 >= 0.18.0-
