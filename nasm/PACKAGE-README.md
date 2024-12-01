@@ -1,25 +1,24 @@
 # nasm - An executable
 
-This is a `build2` package for the [`<UPSTREAM-NAME>`](https://<UPSTREAM-URL>)
-executable. It is a <SUMMARY-OF-FUNCTIONALITY>.
-
-Note that the `nasm` executable in this package provides `build2` metadata.
-
+This is a `build2` package for the [`nasm`](https://www.nasm.us) & [`ndisasm`](https://www.nasm.us) executables,
+an assembler & disassembler targeting the Intel
+x86 series of processors, with portable source.
 
 ## Usage
 
-To start using `nasm` in your project, add the following build-time
+To start using `nasm` and/or `ndisasm` in your project, add the following build-time
 `depends` value to your `manifest`, adjusting the version constraint as
 appropriate:
 
 ```
-depends: * nasm ^<VERSION>
+depends: * nasm ^2.16.3
 ```
 
 Then import the executable in your `buildfile`:
 
 ```
-import! [metadata] <TARGET> = nasm%exe{<TARGET>}
+import! [metadata] nasm    = nasm%exe{nasm}
+import! [metadata] ndisasm = nasm%exe{ndisasm}
 ```
 
 
@@ -28,18 +27,12 @@ import! [metadata] <TARGET> = nasm%exe{<TARGET>}
 This package provides the following importable targets:
 
 ```
-exe{<TARGET>}
+exe{nasm}
+exe{ndisasm}
 ```
 
-<DESCRIPTION-OF-IMPORTABLE-TARGETS>
+The Netwide Assembler (`nasm`) is an assembler targeting the Intel x86
+series of processors, with portable source.
 
-
-## Configuration variables
-
-This package provides the following configuration variables:
-
-```
-[bool] config.nasm.<VARIABLE> ?= false
-```
-
-<DESCRIPTION-OF-CONFIG-VARIABLES>
+The Netwide Disassembler (`ndisasm`) is a small companion program to the
+Netwide Assembler, NASM.
